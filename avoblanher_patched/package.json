@@ -1,0 +1,17 @@
+{
+  "name": "avoblanher-proyecto-cobranzas",
+  "private": true,
+  "workspaces": [
+    "api-gateway",
+    "auth-service",
+    "billing-service",
+    "bot-service",
+    "frontend",
+    "ia-service"
+  ],
+  "scripts": {
+    "install-all": "npm install",
+    "start-all": "pm2 start ecosystem.config.js",
+    "stop-all": "pm2 delete all"
+  }
+}

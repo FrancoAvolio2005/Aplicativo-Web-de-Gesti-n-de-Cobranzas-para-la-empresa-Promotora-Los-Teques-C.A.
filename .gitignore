@@ -1,0 +1,36 @@
+# ── Node modules ─────────────────────────────────────────────────────────────
+node_modules/
+**/node_modules/
+
+# ── Lock files ────────────────────────────────────────────────────────────────
+package-lock.json
+**/package-lock.json
+
+# ── Variables de entorno ──────────────────────────────────────────────────────
+.env
+**/.env
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+logs/
+*.log
+**/logs/
+
+# ── Comprobantes subidos (archivos de usuario) ────────────────────────────────
+billing-service/uploads/comprobantes/*
+!billing-service/uploads/comprobantes/.gitkeep
+
+# ── Builds del frontend ───────────────────────────────────────────────────────
+frontend/dist/
+frontend/.vite/
+
+# ── Sistema operativo ─────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── IDEs ──────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+
+# ── Sequelize ─────────────────────────────────────────────────────────────────
+**/*.sqlite
