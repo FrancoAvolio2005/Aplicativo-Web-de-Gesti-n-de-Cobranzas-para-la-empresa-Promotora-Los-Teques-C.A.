@@ -315,7 +315,7 @@ export default function PaymentsPage() {
                 </div>
                 <div>
                   <label className={labelCls}>{t('pay_modal_ref')}</label>
-                  <input type="text" placeholder="00012345678" value={form.referencia} onChange={e => setForm(f => ({ ...f, referencia: e.target.value }))} className={inputCls} />
+                  <input type="text" required placeholder="00012345678" value={form.referencia} onChange={e => setForm(f => ({ ...f, referencia: e.target.value }))} className={inputCls} />
                 </div>
                 <div className="flex gap-3 pt-1">
                   <button type="button" onClick={() => setModal(false)} className="flex-1 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-white/5 transition">{t('cancel')}</button>

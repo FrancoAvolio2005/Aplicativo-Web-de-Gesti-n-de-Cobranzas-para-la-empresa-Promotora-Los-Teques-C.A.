@@ -3,7 +3,7 @@ import api from '../../api/axios';
 import Navbar from '../../components/shared/Navbar';
 import StatusBadge from '../../components/shared/StatusBadge';
 import { useI18n } from '../../context/I18nContext';
-import { FileText, Plus, X, Eye, Send, Building2, Filter, User } from 'lucide-react';
+import { FileText, Plus, X, Eye, Send, Building2, Filter, User, Loader2 } from 'lucide-react';
 
 const EMPTY    = { user_id: '', company_id: '', descripcion: '', monto_ves: '', fecha_vencimiento: '' };
 const STATUSES = ['', 'pendiente', 'vencida', 'mora', 'pagada', 'anulada'];
@@ -117,17 +117,21 @@ export default function InvoicesPage() {
   }, [form.user_id]);
 
   const handleCreate = async (e) => {
-    e.preventDefault(); setSaving(true); setError('');
-    try {
-      await api.post('/api/invoices', {
+  e.preventDefault(); setSaving(true); setError('');
+  const minDelay = new Promise(resolve => setTimeout(resolve, 2000));
+  try {
+    await Promise.all([
+      api.post('/api/invoices', {
         user_id: form.user_id, company_id: form.company_id || null,
         descripcion: form.descripcion, monto_ves: parseFloat(form.monto_ves),
         fecha_vencimiento: form.fecha_vencimiento,
-      });
-      setModal(false); setForm(EMPTY); load();
-    } catch (err) { setError(err.response?.data?.error || t('inv_create_error')); }
-    finally { setSaving(false); }
-  };
+      }),
+      minDelay,
+    ]);
+    setModal(false); setForm(EMPTY); load();
+  } catch (err) { await minDelay; setError(err.response?.data?.error || t('inv_create_error')); }
+  finally { setSaving(false); }
+};
 
   const updateStatus = async (id, status) => {
     try { await api.patch(`/api/invoices/${id}/status`, { status }); load(); }
@@ -350,7 +354,7 @@ export default function InvoicesPage() {
                 )}
                 <div>
                   <label className={labelCls}>{t('inv_modal_desc')}</label>
-                  <input type="text" placeholder={t('inv_modal_desc_ph')} value={form.descripcion} onChange={e => setForm(f => ({ ...f, descripcion: e.target.value }))} className={inputCls} />
+                  <input type="text" required value={form.descripcion} onChange={e => setForm(f => ({ ...f, descripcion: e.target.value }))} placeholder={t('inv_modal_desc_ph')} className={inputCls} />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
@@ -372,7 +376,16 @@ export default function InvoicesPage() {
         </div>
       )}
 
-      {detailInv && <InvoiceDetailModal invoice={detailInv} clients={clients} onClose={() => setDetailInv(null)} t={t} />}
+      {saving && (
+  <div className="fixed inset-0 z-[70] bg-black/40 backdrop-blur-sm flex items-center justify-center">
+    <div className="bg-white dark:bg-slate-900 rounded-2xl px-8 py-7 flex flex-col items-center gap-3 shadow-xl">
+      <Loader2 size={32} className="animate-spin text-indigo-600" />
+      <p className="text-sm font-medium text-slate-600 dark:text-slate-300">{t('inv_modal_saving')}</p>
+    </div>
+  </div>
+)}
+
+{detailInv && <InvoiceDetailModal invoice={detailInv} clients={clients} onClose={() => setDetailInv(null)} t={t} />}
     </div>
   );
 }
